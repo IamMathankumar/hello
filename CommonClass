@@ -1,0 +1,165 @@
+package com.package.name.utils;
+
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.location.LocationManager;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
+import android.text.SpannableString;
+import android.text.style.AbsoluteSizeSpan;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.SuperscriptSpan;
+import android.util.TypedValue;
+import android.view.Gravity;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import com.lane.vision.R;
+
+
+public class ConstantMethods {
+
+    public static SpannableString mandatoryStart(String height, Context c) {
+        SpannableString heightSpan = new SpannableString(height);
+        int color = ContextCompat.getColor(c, R.color.text_blue_color);
+        heightSpan.setSpan(new ForegroundColorSpan(color), height.length() - 1, height.length(), 0);// set color
+        heightSpan.setSpan(new SuperscriptSpan(), height.length() - 1, height.length(), 0);// set Superscript
+        Float valueInPixels = c.getResources().getDimension(R.dimen.textSmall);
+        Float px = valueInPixels / c.getResources().getDisplayMetrics().scaledDensity;
+
+        Float min = (px * 4) / 6;
+        heightSpan.setSpan(new AbsoluteSizeSpan(convertSpToPixels(min, c)), height.length() - 1, height.length(), 0);// set size
+
+        return heightSpan;
+    }
+
+    public static SpannableString convertSpan(String height, Context c)
+
+    {
+        SpannableString heightSpan = new SpannableString(height);
+        Float valueInPixels = c.getResources().getDimension(R.dimen.textSmall);
+        Float px = valueInPixels / c.getResources().getDisplayMetrics().scaledDensity;
+
+        Float min = (px * 4) / 5;
+        heightSpan.setSpan(new AbsoluteSizeSpan(convertSpToPixels(px, c)), 0, 6, 0); // set size
+        heightSpan.setSpan(new AbsoluteSizeSpan(convertSpToPixels(min, c)), 7, height.length(), 0); // set size
+        return heightSpan;
+    }
+
+    private static int convertSpToPixels(Float sp, Context context)
+
+    {
+        return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp, context.getResources().getDisplayMetrics()));
+    }
+
+    public static Drawable resize(Drawable drawable, Context c) {
+        drawable.mutate();
+        DrawableCompat.setTint(drawable, ContextCompat.getColor(c, R.color.text_blue_color));
+        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+        int valueInPixels = (int) c.getResources().getDimension(R.dimen.imageVerySmall);
+        Bitmap bitmapResized = Bitmap.createScaledBitmap(bitmap, valueInPixels, valueInPixels, false);
+
+        return new BitmapDrawable(c.getResources(), bitmapResized);
+    }
+
+    public static void snackBar(View v, String text) {
+        Snackbar snackbar = Snackbar
+                .make(v, text, Snackbar.LENGTH_LONG)
+                /*.setAction("Ok", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                    }
+                })*/;
+
+// Changing message text color
+        snackbar.setActionTextColor(Color.RED);
+        SnackBarGravity(snackbar);
+// Changing action button text color
+        View sbView = snackbar.getView();
+        SnackBarGravity(snackbar);
+        TextView textView = sbView.findViewById(android.support.design.R.id.snackbar_text);
+        sbView.getLayoutParams().width = LinearLayout.LayoutParams.WRAP_CONTENT; // For change `TextView` width to `WRAP_CONTENT`
+//textView.getLayoutParams().width = 200; // For change `TextView` width to 200
+
+        textView.setTextColor(Color.YELLOW);
+        snackbar.show();
+    }
+
+
+    private static void SnackBarGravity(Snackbar snackbar) {
+        final ViewGroup.LayoutParams params = snackbar.getView().getLayoutParams();
+        if (params instanceof CoordinatorLayout.LayoutParams) {
+            ((CoordinatorLayout.LayoutParams) params).gravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
+        } else {
+            ((FrameLayout.LayoutParams) params).gravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
+        }
+        snackbar.getView().setLayoutParams(params);
+    }
+
+    public static void snackBarSuccess(View v, String text, Context c) {
+        Snackbar snackbar = Snackbar
+                .make(v, text, Snackbar.LENGTH_LONG)
+                /*.setAction("Ok", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                    }
+                })*/;
+
+// Changing message text color
+        snackbar.setActionTextColor(Color.RED);
+        SnackBarGravity(snackbar);
+// Changing action button text color
+        View sbView = snackbar.getView();
+        TextView textView = sbView.findViewById(android.support.design.R.id.snackbar_text);
+        sbView.getLayoutParams().width = LinearLayout.LayoutParams.WRAP_CONTENT; // For change `TextView` width to `WRAP_CONTENT`
+        sbView.setBackgroundColor(ContextCompat.getColor(c, R.color.green_color));
+//textView.getLayoutParams().width = 200; // For change `TextView` width to 200
+        textView.setTextColor(Color.WHITE);
+        snackbar.show();
+    }
+
+    public static void snackBarFailure(View v, String text, Context c) {
+        Snackbar snackbar = Snackbar
+                .make(v, text, Snackbar.LENGTH_LONG)
+                /*.setAction("Ok", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                    }
+                })*/;
+
+// Changing message text color
+        snackbar.setActionTextColor(Color.RED);
+        SnackBarGravity(snackbar);
+// Changing action button text color
+        View sbView = snackbar.getView();
+        TextView textView = sbView.findViewById(android.support.design.R.id.snackbar_text);
+        sbView.getLayoutParams().width = LinearLayout.LayoutParams.WRAP_CONTENT; // For change `TextView` width to `WRAP_CONTENT`
+//textView.getLayoutParams().width = 200; // For change `TextView` width to 200
+        sbView.setBackgroundColor(ContextCompat.getColor(c, R.color.red));
+        textView.setTextColor(Color.WHITE);
+        snackbar.show();
+    }
+
+
+    public static boolean CheckGpsStatus(Context context) {
+
+        LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+
+        return locationManager != null && locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+    }
+
+}
