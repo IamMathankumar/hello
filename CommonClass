@@ -28,6 +28,19 @@ import com.lane.vision.R;
 
 public class ConstantMethods {
 
+
+    public static void revealShow(View view) {
+        view.setVisibility(View.VISIBLE);
+        int cx = view.getWidth();
+        int cy = view.getHeight();
+
+        float finalRadius = (float) Math.max(cx, cy) * 1.2f;
+        Animator reveal = ViewAnimationUtils
+                .createCircularReveal(view, (int) 0, (int) cx, 0f, finalRadius);
+        reveal.setDuration(700);
+        reveal.start();
+    }
+    
     public static SpannableString mandatoryStart(String height, Context c) {
         SpannableString heightSpan = new SpannableString(height);
         int color = ContextCompat.getColor(c, R.color.text_blue_color);
